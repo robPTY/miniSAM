@@ -36,3 +36,7 @@ Lightweight decoder that combines image embeddings with prompt embeddings to pre
 - [ ] Backward pass
 - [ ] Testing (gradient verification, mask quality metrics)
 - [ ] Multi-mask output support (3 masks with confidence scores)
+
+## Resources
+
+- [An Image is Worth 16x16 Words (ViT Paper)](https://arxiv.org/abs/2010.11929)
