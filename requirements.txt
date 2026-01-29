@@ -1,0 +1,3 @@
+hf==1.3.4
+datasets==4.5.0
+matplotlib==3.10.8
