@@ -1,3 +1,6 @@
+from torch.utils.data import DataLoader
+
+import config
 from dataset import ImageDataset
 from scripts.load_data import resized_train, resized_valid, resized_test
 
@@ -15,6 +18,13 @@ def load_datasets() -> tuple[ImageDataset, ImageDataset, ImageDataset]:
 
 def main():
     train_set, valid_set, test_set = load_datasets()
+    # Shuffle is turned to False by default because its streamed
+    # If i want to shuffle, should find a different way (ideally in Dataset)
+    train_loader = DataLoader(train_set, batch_size=config.BATCH_SIZE)
+    images, labels = next(iter(train_loader))
+
+    print(images.size)
+    
     return 1
 
 if __name__ == "__main__":

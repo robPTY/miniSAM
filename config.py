@@ -7,3 +7,5 @@ ViT_BASE_CFG = {
     "PATCH_SIZE": 16, #16x16
     "IMG_SIZE": 224 # 224x224
 }
+
+BATCH_SIZE = 64
