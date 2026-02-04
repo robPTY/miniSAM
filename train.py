@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader
 
 import config
 from dataset import ImageDataset
+from model import VisionTransformer
 from scripts.load_data import resized_train, resized_valid, resized_test
 
 def load_datasets() -> tuple[ImageDataset, ImageDataset, ImageDataset]:
@@ -23,7 +24,8 @@ def main():
     train_loader = DataLoader(train_set, batch_size=config.BATCH_SIZE)
     images, labels = next(iter(train_loader))
 
-    print(images.size)
+    model = VisionTransformer(config.ViT_BASE_CFG)
+    model(images)
     
     return 1
 
