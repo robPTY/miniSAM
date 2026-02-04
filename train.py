@@ -1,3 +1,4 @@
+import wandb
 from torch.utils.data import DataLoader
 
 import config
@@ -18,14 +19,20 @@ def load_datasets() -> tuple[ImageDataset, ImageDataset, ImageDataset]:
     return train_set, valid_set, test_set
 
 def main():
+    configs = config.ViT_BASE_CFG
     train_set, valid_set, test_set = load_datasets()
+
     # Shuffle is turned to False by default because its streamed
     # If i want to shuffle, should find a different way (ideally in Dataset)
-    train_loader = DataLoader(train_set, batch_size=config.BATCH_SIZE)
+    train_loader = DataLoader(train_set, batch_size=configs['BATCH_SIZE'])
     images, labels = next(iter(train_loader))
 
-    model = VisionTransformer(config.ViT_BASE_CFG)
+    model = VisionTransformer(configs)
     model(images)
+
+    # Log in and start wandb run
+    wandb.login()
+    run = wandb.init(entity=config.entity, project=config.project, config=configs)
     
     return 1
 

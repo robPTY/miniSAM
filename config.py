@@ -6,7 +6,11 @@ ViT_BASE_CFG = {
     "NUM_HEADS": 12, # for MHA
     "PATCH_SIZE": 16, #16x16
     "IMG_SIZE": 224, # 224x224
-    "IN_CHANNELS": 3
-}
+    "IN_CHANNELS": 3,
+    "BATCH_SIZE": 64, 
+    "p": 0.1 # dropout 
+} 
 
-BATCH_SIZE = 64
+# WandB configs
+entity = "rcadown8-fordham-university"
+project = "ViT-Training"
