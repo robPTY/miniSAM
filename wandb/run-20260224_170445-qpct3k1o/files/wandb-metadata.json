@@ -1,0 +1,40 @@
+{
+  "os":  "Windows-10-10.0.19045-SP0",
+  "python":  "CPython 3.12.6",
+  "startedAt":  "2026-02-24T22:04:45.986485Z",
+  "program":  "C:\\Users\\rcagu\\Desktop\\repos\\miniSAM\\train.py",
+  "codePath":  "train.py",
+  "codePathLocal":  "train.py",
+  "git":  {
+    "remote":  "git@github.com:robPTY/miniSAM.git",
+    "commit":  "a02f328e672bf3ec3637c744e2cad958746a79c8"
+  },
+  "email":  "rcadown8@gmail.com",
+  "root":  "C:\\Users\\rcagu\\Desktop\\repos\\miniSAM",
+  "host":  "LAPTOP-IGR8SM16",
+  "executable":  "C:\\Users\\rcagu\\Desktop\\repos\\miniSAM\\.venv\\Scripts\\python.exe",
+  "cpu_count":  8,
+  "cpu_count_logical":  16,
+  "gpu":  "NVIDIA GeForce GTX 1650",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "489989410816",
+      "used":  "477271752704"
+    }
+  },
+  "memory":  {
+    "total":  "16541487104"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce GTX 1650",
+      "memoryTotal":  "4294967296",
+      "cudaCores":  896,
+      "architecture":  "Turing",
+      "uuid":  "GPU-be6852d8-931e-cc96-ebd7-6ea92157583e"
+    }
+  ],
+  "cudaVersion":  "12.3",
+  "writerId":  "nliysoyuragt05cuz3qph1ly46tv4qsn"
+}
