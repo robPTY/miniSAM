@@ -8,7 +8,8 @@ ViT_BASE_CFG = {
     "IMG_SIZE": 224, # 224x224
     "IN_CHANNELS": 3,
     "BATCH_SIZE": 64, 
-    "p": 0.1 # dropout 
+    "p": 0.1, # dropout 
+    "EPS": 10**-6 # for layer norm
 } 
 
 # WandB configs

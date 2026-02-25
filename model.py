@@ -2,6 +2,7 @@ from typing import Dict
 
 import torch
 from torch import nn, Tensor
+from robertorch import LayerNorm, MLPBlockGeLU, ResidualLayer
 
 class PatchLayer(nn.Module):
     def __init__(self, cfg: Dict[str, int]) -> None:
@@ -41,11 +42,14 @@ class MLPBlock(nn.Module):
         xGelud = self.m(xForward)
         return self.W2(self.dropout(xGelud))
 
-# class Encoder(nn.Module):
-#     def __init__(self, cfg: Dict[str, int]):
-#         super().__init__()
-#         self.MLP_block = MLPBlock(cfg)
-
+class Encoder(nn.Module):
+    def __init__(self, cfg: Dict[str, int]):
+        super().__init__()
+        self.MLP_block = MLPBlock(cfg)
+        self.layer_norm = LayerNorm(cfg['D'], cfg['EPS'])
+    
+    def forward(self, x: Tensor):
+        x = self.layer_norm(x)
 
 class VisionTransformer(nn.Module):
     def __init__(self, cfg: Dict[str, int]) -> None:
@@ -55,6 +59,10 @@ class VisionTransformer(nn.Module):
         self.image_size = cfg['IMG_SIZE']
         assert self.image_size % self.patch_size == 0, "Image size must be divisible by patch size"
         self.patch_layer = PatchLayer(cfg)
+        self.encoders = nn.ModuleList([Encoder(cfg) for _ in range(cfg['L'])])
 
     def forward(self, x: Tensor):
-        x = self.patch_layer(x)
+        x = self.patch_layer(x) # embedded patches
+        for layer in self.encoders:
+            x = layer(x)
+        return x 
