@@ -28,11 +28,14 @@ def main():
     images, labels = next(iter(train_loader))
 
     model = VisionTransformer(configs)
-    model(images)
+    logits = model(images)
+
+    print(f'logit shape: {logits.shape}')
+    print(f'expected shape: (B, N+1, D)')
 
     # Log in and start wandb run
-    wandb.login()
-    run = wandb.init(entity=config.entity, project=config.project, config=configs)
+    # wandb.login()
+    # run = wandb.init(entity=config.entity, project=config.project, config=configs)
     
     return 1
 

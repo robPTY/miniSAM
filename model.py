@@ -2,7 +2,7 @@ from typing import Dict
 
 import torch
 from torch import nn, Tensor
-from robertorch import LayerNorm, MLPBlockGeLU, ResidualLayer
+from robertorch import LayerNorm, MLPBlockGeLU, ResidualLayer, MultiHeadAttention
 
 class PatchLayer(nn.Module):
     def __init__(self, cfg: Dict[str, int]) -> None:
@@ -27,29 +27,24 @@ class PatchLayer(nn.Module):
         x = torch.cat((self.class_token, x), dim=1) # (B, 197, emb_dim)
         x = x + self.pos_embeds # (B, 197, emb_dim)
         return x
-    
-class MLPBlock(nn.Module):
-    def __init__(self, cfg: Dict[str, int]) -> None:
-        super().__init__() 
-        self.W1 = nn.Linear(cfg['D'], cfg['MLP_SIZE'])
-        self.W2 = nn.Linear(cfg['MLP_SIZE'], cfg['D'])
-        self.m = nn.GELU()
-        self.dropout = nn.Dropout(cfg['p'])
-    
-    def forward(self, x: Tensor) -> Tensor:
-        '''Return a tensor being passed through two MLP layers and GELU non-linearity'''
-        xForward = self.W1(x)
-        xGelud = self.m(xForward)
-        return self.W2(self.dropout(xGelud))
+
 
 class Encoder(nn.Module):
     def __init__(self, cfg: Dict[str, int]):
         super().__init__()
-        self.MLP_block = MLPBlock(cfg)
+        self.MLP_block = MLPBlockGeLU(cfg)
         self.layer_norm = LayerNorm(cfg['D'], cfg['EPS'])
+        self.MHA_block = MultiHeadAttention(cfg)
+        # Residual connection after MHA and after MLP block
+        self.residuals = nn.ModuleList([ResidualLayer(cfg) for _ in range(2)])
     
-    def forward(self, x: Tensor):
-        x = self.layer_norm(x)
+    def forward(self, x: Tensor, mask: Tensor):
+        # The first residual will call Res(x + Dropout(MHA(Norm(x), Mask))))
+        x = self.residuals[0](x, lambda x: self.MHA_block(x, x, x, mask), post_norm=False)
+        # The second residual will call Res(x + Dropout(MLP(Norm(x))))
+        x = self.residuals[1](x, self.MLP_block, post_norm=False)
+        return x
+
 
 class VisionTransformer(nn.Module):
     def __init__(self, cfg: Dict[str, int]) -> None:
@@ -59,10 +54,11 @@ class VisionTransformer(nn.Module):
         self.image_size = cfg['IMG_SIZE']
         assert self.image_size % self.patch_size == 0, "Image size must be divisible by patch size"
         self.patch_layer = PatchLayer(cfg)
-        self.encoders = nn.ModuleList([Encoder(cfg) for _ in range(cfg['L'])])
+        self.encoder_layers = nn.ModuleList([Encoder(cfg) for _ in range(cfg['L'])])
+        self.mask = None
 
     def forward(self, x: Tensor):
         x = self.patch_layer(x) # embedded patches
-        for layer in self.encoders:
-            x = layer(x)
-        return x 
+        for layer in self.encoder_layers:
+            x = layer(x, self.mask)
+        return x  # should be of shape (B, N+1, D)
