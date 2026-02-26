@@ -10,7 +10,14 @@ ViT_BASE_CFG = {
     "IN_CHANNELS": 3,
     "BATCH_SIZE": 64, 
     "p": 0.1, # dropout 
-    "EPS": 10**-6 # for layer norm
+    "EPS": 10**-6,  # for layer norm
+    "NUM_CLASSES": 1000,
+    "LR": 10**-4,
+    "BETA1": 0.9,
+    "BETA2": 0.999,
+    "ADAM_EPS": 10**-9,
+    "EPOCHS": 7,
+    "LOG_EVERY": 50,
 } 
 
 # WandB configs

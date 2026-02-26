@@ -1,7 +1,6 @@
 from PIL import Image
 
 from datasets import load_dataset, Dataset
-import matplotlib.pyplot as plt
 
 from config import ViT_BASE_CFG as cfg
 

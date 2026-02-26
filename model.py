@@ -16,7 +16,7 @@ class PatchLayer(nn.Module):
             stride=cfg['PATCH_SIZE']
         )
         self.num_patches = (cfg["IMG_SIZE"] // cfg["PATCH_SIZE"]) ** 2
-        self.class_token = nn.Parameter(torch.randn(cfg['BATCH_SIZE'], 1, cfg['D']), requires_grad=True)
+        self.class_token = nn.Parameter(torch.randn(1, 1, cfg['D']), requires_grad=True)
         self.pos_embeds = nn.Parameter(torch.randn(1, self.num_patches+1, cfg['D']))
     
     def forward(self, x: Tensor) -> Tensor:
@@ -24,7 +24,11 @@ class PatchLayer(nn.Module):
         x = self.conv_layer(x) # (B, C, IMG_SIZE, IMG_SIZE) -> (B, emb_dim, 14, 14)
         x = x.flatten(2) # (B, emb_dim, 196)
         x = x.transpose(1, 2) # (B, 196, emb_dim)
-        x = torch.cat((self.class_token, x), dim=1) # (B, 197, emb_dim)
+
+        B = x.shape[0]
+        cls = self.class_token.expand(B, -1, -1) # (B, 1, D)
+
+        x = torch.cat((cls, x), dim=1) # (B, 197, emb_dim)
         x = x + self.pos_embeds # (B, 197, emb_dim)
         return x
 
@@ -45,6 +49,16 @@ class Encoder(nn.Module):
         x = self.residuals[1](x, self.MLP_block, post_norm=False)
         return x
 
+class MLPHead(nn.Module):
+    def __init__(self, cfg: Dict[str, int]) -> None:
+        super().__init__()
+        self.linear_layer = nn.Linear(cfg['D'], cfg['NUM_CLASSES'])
+    
+    def forward(self, x: Tensor) -> Tensor:
+        cls = x[:, 0]
+        logits = self.linear_layer(cls)
+        return logits
+
 
 class VisionTransformer(nn.Module):
     def __init__(self, cfg: Dict[str, int]) -> None:
@@ -55,10 +69,12 @@ class VisionTransformer(nn.Module):
         assert self.image_size % self.patch_size == 0, "Image size must be divisible by patch size"
         self.patch_layer = PatchLayer(cfg)
         self.encoder_layers = nn.ModuleList([Encoder(cfg) for _ in range(cfg['L'])])
+        self.mlp_head = MLPHead(cfg)
         self.mask = None
 
     def forward(self, x: Tensor):
         x = self.patch_layer(x) # embedded patches
         for layer in self.encoder_layers:
             x = layer(x, self.mask)
-        return x  # should be of shape (B, N+1, D)
+        # pre-MLP head, x should be of shape (B, N+1, D)
+        return self.mlp_head(x)  
