@@ -1,0 +1,75 @@
+_wandb:
+    value:
+        cli_version: 0.24.1
+        e:
+            nliysoyuragt05cuz3qph1ly46tv4qsn:
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 8
+                cpu_count_logical: 16
+                cudaVersion: "12.3"
+                disk:
+                    /:
+                        total: "489989410816"
+                        used: "477271752704"
+                email: rcadown8@gmail.com
+                executable: C:\Users\rcagu\Desktop\repos\miniSAM\.venv\Scripts\python.exe
+                git:
+                    commit: a02f328e672bf3ec3637c744e2cad958746a79c8
+                    remote: git@github.com:robPTY/miniSAM.git
+                gpu: NVIDIA GeForce GTX 1650
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Turing
+                      cudaCores: 896
+                      memoryTotal: "4294967296"
+                      name: NVIDIA GeForce GTX 1650
+                      uuid: GPU-be6852d8-931e-cc96-ebd7-6ea92157583e
+                host: LAPTOP-IGR8SM16
+                memory:
+                    total: "16541487104"
+                os: Windows-10-10.0.19045-SP0
+                program: C:\Users\rcagu\Desktop\repos\miniSAM\train.py
+                python: CPython 3.12.6
+                root: C:\Users\rcagu\Desktop\repos\miniSAM
+                startedAt: "2026-02-24T22:04:45.986485Z"
+                writerId: nliysoyuragt05cuz3qph1ly46tv4qsn
+        m: []
+        python_version: 3.12.6
+        t:
+            "1":
+                - 1
+                - 41
+                - 49
+                - 51
+            "2":
+                - 1
+                - 41
+                - 49
+                - 51
+            "3":
+                - 16
+            "4": 3.12.6
+            "5": 0.24.1
+            "8":
+                - 3
+            "12": 0.24.1
+            "13": windows-amd64
+BATCH_SIZE:
+    value: 64
+D:
+    value: 768
+IMG_SIZE:
+    value: 224
+IN_CHANNELS:
+    value: 3
+L:
+    value: 12
+MLP_SIZE:
+    value: 3072
+NUM_HEADS:
+    value: 12
+PATCH_SIZE:
+    value: 16
+p:
+    value: 0.1
